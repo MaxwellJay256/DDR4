@@ -1,0 +1,11 @@
+<launch>
+<!-- 启动camera节点 -->
+    <node name="camera" pkg="drug-delivery-robot" type="camera" output="screen">
+        <!-- 你可以在这里添加参数 -->
+    </node>
+
+    <!-- 启动drug_delivery_robot节点 -->
+    <node name="image_processor" pkg="drug-delivery-robot" type="image_processor" output="screen">
+        <!-- 你可以在这里添加参数 -->
+    </node>
+</launch>
