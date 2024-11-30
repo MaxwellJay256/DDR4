@@ -26,7 +26,7 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
 }
 
 int main(int argc, char **argv) {
-    ros::init(argc, argv, "image_processor");
+    ros::init(argc, argv, "color_split_tool");
     ros::NodeHandle nh;
     ros::Subscriber sub = nh.subscribe("camera/image", 1, imageCallback);
 

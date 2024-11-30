@@ -142,6 +142,7 @@ include_directories(
 add_executable(camera src/camera.cpp)
 add_executable(image_processor src/image_processor.cpp)
 add_executable(color_split_tool src/color_split_tool.cpp)
+add_executable(pill_recognition_tool src/pill_recognition_tool.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -168,6 +169,11 @@ target_link_libraries(image_processor
 )
 
 target_link_libraries(color_split_tool
+    ${catkin_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+)
+
+target_link_libraries(pill_recognition_tool
     ${catkin_LIBRARIES}
     ${OpenCV_LIBRARIES}
 )

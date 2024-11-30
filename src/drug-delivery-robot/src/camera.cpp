@@ -11,13 +11,14 @@ enum CameraState {
     REALSENSE
 };
 
-CameraState cameraState = REALSENSE;
+CameraState cameraState = ZED;
 using namespace cv;
 
 Mat frame_msg;
-void rcvCameraCallback(const sensor_msgs::Image::ConstPtr& msg) {
-    cv_bridge::CvImagePtr cv_ptr;
-    cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+void rcvCameraCallBack(const sensor_msgs::Image::ConstPtr& img)
+{
+    cv_bridge::CvImageConstPtr cv_ptr;
+    cv_ptr = cv_bridge::toCvShare(img, sensor_msgs::image_encodings::BGR8);
     frame_msg = cv_ptr->image;
 }
 
@@ -44,10 +45,12 @@ int main(int argc, char **argv) {
             ROS_ERROR("ZED camera is not opened.");
             return -1;
         }
+        ROS_INFO("ZED Camera connected.");
         break;
 
     case REALSENSE:
-        camera_sub = n.subscribe("/camera/color/image_raw", 1, rcvCameraCallback);
+        camera_sub = n.subscribe("/camera/color/image_raw", 1, rcvCameraCallBack);
+        waitKey(1000);
         break;
 
     default:
@@ -92,6 +95,7 @@ int main(int argc, char **argv) {
         if (!frIn.empty()) {
             sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", frIn).toImageMsg();
             camera_pub.publish(msg);
+            // ROS_INFO("Image width: %d, height: %d", frIn.cols, frIn.rows);
         }
 
         waitKey(10);

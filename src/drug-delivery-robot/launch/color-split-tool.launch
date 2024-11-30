@@ -2,6 +2,6 @@
     <node name="camera" pkg="drug-delivery-robot" type="camera" output="screen">
     </node>
 
-    <node name="image_processor" pkg="drug-delivery-robot" type="image_processor" output="screen">
+    <node name="color_split_tool" pkg="drug-delivery-robot" type="color_split_tool" output="screen">
     </node>
 </launch>
