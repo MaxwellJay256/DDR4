@@ -8,10 +8,10 @@
 
 using namespace cv;
 
-int hsv_pill_g_min[3] = {29, 0, 42};
-int hsv_pill_g_max[3] = {103, 62, 130};
-int hsv_pill_b_min[3] = {106, 38, 129};
-int hsv_pill_b_max[3] = {148, 129, 227};
+int hsv_pill_g_min[3] = {67, 4, 48};
+int hsv_pill_g_max[3] = {117, 102, 164};
+int hsv_pill_b_min[3] = {95, 34, 98};
+int hsv_pill_b_max[3] = {126, 153, 190};
 int hsv_cone_min[3] = {0, 142, 88};
 int hsv_cone_max[3] = {183, 255, 255};
 
