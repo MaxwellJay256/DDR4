@@ -1,4 +1,5 @@
 <launch>
+    <include file="$(find dashgo_driver)/launch/driver_imu.launch" />
     <node name="camera" pkg="drug-delivery-robot" type="camera" output="screen">
     </node>
 

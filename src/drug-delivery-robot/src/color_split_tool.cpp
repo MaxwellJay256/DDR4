@@ -7,15 +7,21 @@
 #include <opencv2/core/core.hpp>
 
 using namespace cv;
+
+void equalizeHistBGR(Mat &src, Mat &dst);
 void colorSplitManual(const Mat &hsv_input, Mat &thresholded_output, const char* window_name);
 
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
     try {
         Mat img_raw = cv_bridge::toCvShare(msg, "bgr8")->image;
         imshow("Raw Image", img_raw);
+
+        Mat img_equalized = img_raw.clone();
+        // equalizeHistBGR(img_raw, img_equalized);
+        // imshow("equalized", img_equalized);
         
         Mat img_hsv, img_hsv_split;
-        cvtColor(img_raw, img_hsv, COLOR_BGR2HSV); // convert the image to HSV
+        cvtColor(img_equalized, img_hsv, COLOR_BGR2HSV); // convert the image to HSV
         colorSplitManual(img_hsv, img_hsv_split, "HSV");
 
         waitKey(30);
@@ -53,4 +59,16 @@ void colorSplitManual(const Mat &hsv_input, Mat &thresholded_output, const char*
         resize(thresholded_output, thresholded_output, Size(960, 540));
     }
     imshow(window_name, thresholded_output);
+}
+
+void equalizeHistBGR(Mat &src, Mat &dst)
+{
+    std::vector<Mat> channels;
+    split(src, channels);
+
+    for (int i = 0; i < 3; i++) {
+        equalizeHist(channels[i], channels[i]);
+    }
+
+    merge(channels, dst);
 }
