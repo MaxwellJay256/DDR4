@@ -10,12 +10,20 @@ ZED camera image: width = 672, height = 376
 
 ## Note
 
+Run this program:
+
+```bash
+source devel/setup.bash
+roslaunch drug_delivery_robot_2024
+```
+
 Using ZED camera:
 
 ```bash
 roslaunch dashgo_driver driver_imu.launch
 ```
-using REALSENSE camera:
+
+Using REALSENSE camera:
 
 ```bash
 roslaunch dashgo_driver driver_imu.launch
