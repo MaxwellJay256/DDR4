@@ -14,10 +14,10 @@ using namespace cv;
 void colorSplit(const Mat &hsv_input, Mat &thresholded_output);
 int hsv_cone_min[3] = {0, 142, 88};
 int hsv_cone_max[3] = {183, 255, 255};
-int hsv_pill_g_min[3] = {54, 22, 75};
-int hsv_pill_g_max[3] = {102, 95, 186};
-int hsv_pill_b_min[3] = {95, 41, 120};
-int hsv_pill_b_max[3] = {142, 89, 221};
+int hsv_pill_g_min[3] = {45, 28, 61};
+int hsv_pill_g_max[3] = {95, 95, 152};
+int hsv_pill_b_min[3] = {103, 43, 131};
+int hsv_pill_b_max[3] = {158, 130, 195};
 
 int img_width = 672, img_height = 376;
 int roi_width = 500, roi_height = 100;
@@ -26,7 +26,7 @@ int roi_y_start = 90;
 int roi_cone_width = 150,roi_cone_height = 100;
 int roi_cone_y_start = 200;
 
-int cone_pixel_thershold_in = 7500;
+int cone_pixel_thershold_in = 8500;
 int cone_pixel_thershold_out = 4000;
 int move_turn_error = 50;
 
