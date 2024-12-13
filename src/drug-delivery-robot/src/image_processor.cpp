@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        imshow("raw", img_raw); // why?
+        imshow("raw", img_raw); // the program crashes without this line, why?
         // Gaussian blur
         Mat img_blur = img_raw.clone();
         Mat img_show = img_raw.clone();
@@ -149,28 +149,31 @@ int main(int argc, char **argv) {
         //*/
         
         Mat image_hsv_spilt_cone;
-        inRange(img_hsv,Scalar(hsv_cone_min[0],hsv_cone_min[1],hsv_cone_min[2]),Scalar(hsv_cone_max[0],hsv_cone_max[1],hsv_cone_max[2]),image_hsv_spilt_cone);
-        rectangle(img_show,roi_cone,Scalar(0,255,0),2);
+        inRange(img_hsv,
+            Scalar(hsv_cone_min[0], hsv_cone_min[1], hsv_cone_min[2]),
+            Scalar(hsv_cone_max[0], hsv_cone_max[1], hsv_cone_max[2]),
+            image_hsv_spilt_cone);
+        rectangle(img_show, roi_cone, Scalar(0,255,0), 2);
         // imshow("cone",image_hsv_spilt_cone);
         Mat roiImage_cone = image_hsv_spilt_cone(roi_cone);
         int cone_pixel_count = countNonZero(roiImage_cone);
         printf("cone_pixel_count: %d\n",cone_pixel_count);
 
-        int num_rows = 82;
-        float lane_center[num_rows][3] = {0};
-        findLane(img_hsv_split_cone, lane_center, num_rows);
+        int num_rows_lane = 82;
+        float lane_center[num_rows_lane][3] = {0};
+        findLane(img_hsv_split_cone, lane_center, num_rows_lane);
 
         float error = 0;
-        for (int i = img_show.rows - 1; i > img_show.rows - num_rows; i--) {
+        for (int i = img_show.rows - 1; i > img_show.rows - num_rows_lane; i--) {
             circle(img_show, Point(lane_center[i][0], i), 1, Scalar(0, 0, 255), -1);
             circle(img_show, Point(lane_center[i][1], i), 1, Scalar(0, 0, 255), -1);
             circle(img_show, Point(lane_center[i][2], i), 1, Scalar(0, 255, 255), -1);
 
-            error += (float)(lane_center[i][2] - img_show.cols / 2) / (float)num_rows;
+            error += (float)(lane_center[i][2] - img_show.cols / 2) / (float)num_rows_lane;
         }
 
         // draw a line in the center
-        Point pt_mid_top(cvRound(img_show.cols / 2), img_show.rows - num_rows);
+        Point pt_mid_top(cvRound(img_show.cols / 2), img_show.rows - num_rows_lane);
         Point pt_mid_bottom(cvRound(img_show.cols / 2), cvRound(img_show.rows - 1));
         line(img_show, pt_mid_bottom, pt_mid_top, Scalar(255, 0, 255), 2, LINE_AA);
 
@@ -264,7 +267,6 @@ void findLane(const Mat &img, float lane_center[][3], int num_rows) {
 
         lane_center[i][2] = (lane_center[i][0] + lane_center[i][1]) / 2;
     }
-    
 }
 
 void patrolControl(float error, geometry_msgs::Twist &msg)
