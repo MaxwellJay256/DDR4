@@ -14,10 +14,10 @@ using namespace cv;
 void colorSplit(const Mat &hsv_input, Mat &thresholded_output);
 int hsv_cone_min[3] = {0, 142, 88};
 int hsv_cone_max[3] = {183, 255, 255};
-int hsv_pill_g_min[3] = {45, 28, 61};
-int hsv_pill_g_max[3] = {95, 95, 152};
-int hsv_pill_b_min[3] = {103, 43, 131};
-int hsv_pill_b_max[3] = {158, 130, 195};
+int hsv_pill_g_min[3] = {61, 21, 54};
+int hsv_pill_g_max[3] = {100, 93, 176};
+int hsv_pill_b_min[3] = {91, 39, 120};
+int hsv_pill_b_max[3] = {136, 113, 176};
 
 int img_width = 672, img_height = 376;
 int roi_width = 500, roi_height = 100;
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
     while (ros::ok())
     {
-        ros::spinOnce(); // check for incoming messages
+        ros::spinOnce();
         waitKey(80);
         if (img_raw.empty()) {
             ROS_WARN("Waiting for image...");
@@ -73,13 +73,11 @@ int main(int argc, char **argv) {
         Mat img_blur = img_raw.clone();
         Mat img_show = img_raw.clone();
         // GaussianBlur(img_raw, img_blur, Size(3, 3), 0, 0);
-        // imshow("blur", img_blur);
 
         // Color Split
         Mat img_hsv, img_hsv_split_cone;
         cvtColor(img_blur, img_hsv, COLOR_BGR2HSV); // convert the image to HSV
         colorSplit(img_hsv, img_hsv_split_cone);
-        // imshow("color split", img_hsv_split_cone);
 
         // color split (pills)
         Mat img_hsv_split_g, img_hsv_split_b;
@@ -127,6 +125,7 @@ int main(int argc, char **argv) {
             avg_area_b /= contours_b.size();
         }
         
+        /*/ caculate variance of both colors
         float variance_g = 65535,variance_b = 65535;
         float area_square_sum_g = 0, area_square_sum_b = 0;
         if(contours_g.size() > 1)
@@ -147,6 +146,7 @@ int main(int argc, char **argv) {
         }
         printf("Green area: %f, Blue area: %f\n", avg_area_g, avg_area_b);
         printf("Green area var: %f , Blue area var: % f \n", variance_g, variance_b);
+        //*/
         
         Mat image_hsv_spilt_cone;
         inRange(img_hsv,Scalar(hsv_cone_min[0],hsv_cone_min[1],hsv_cone_min[2]),Scalar(hsv_cone_max[0],hsv_cone_max[1],hsv_cone_max[2]),image_hsv_spilt_cone);
@@ -154,7 +154,6 @@ int main(int argc, char **argv) {
         // imshow("cone",image_hsv_spilt_cone);
         Mat roiImage_cone = image_hsv_spilt_cone(roi_cone);
         int cone_pixel_count = countNonZero(roiImage_cone);
-        // imshow("cone_roi",roiImage_cone);
         printf("cone_pixel_count: %d\n",cone_pixel_count);
 
         int num_rows = 82;
@@ -176,10 +175,9 @@ int main(int argc, char **argv) {
         line(img_show, pt_mid_bottom, pt_mid_top, Scalar(255, 0, 255), 2, LINE_AA);
 
         static geometry_msgs::Twist msg_patrol;
-        msg_patrol.linear.x = 0.3;
+        msg_patrol.linear.x = 0.3; // forward velocity
 
-        // imshow("Show", img_show);
-        // panduan
+        // decide whether enter phase 1 (turn)
         if(cone_pixel_count > cone_pixel_thershold_in)
         {
             phase = 1;
@@ -190,7 +188,7 @@ int main(int argc, char **argv) {
         }
         if(phase == 1)
         {
-            msg_patrol.linear.x = 0.1;
+            msg_patrol.linear.x = 0.1; // slow down for turning
             if(contours_b.size() > contours_g.size()) 
             {
                 error += -move_turn_error;
@@ -202,7 +200,6 @@ int main(int argc, char **argv) {
         }
         printf("phase: %d\t", phase);
         printf("Error: %f\n", error);
-
         
         patrolControl(error, msg_patrol);
         printf("Linear: %f, Angular: %f\n", msg_patrol.linear.x, msg_patrol.angular.z);
@@ -279,7 +276,4 @@ void patrolControl(float error, geometry_msgs::Twist &msg)
     msg.linear.z = 0;
     msg.angular.x = 0;
     msg.angular.y = 0;
-    
-    // msg.linear.x = 0;
-    // msg.angular.z = 0;
 }

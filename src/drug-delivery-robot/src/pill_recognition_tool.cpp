@@ -8,10 +8,10 @@
 
 using namespace cv;
 
-int hsv_pill_g_min[3] = {67, 4, 48};
-int hsv_pill_g_max[3] = {117, 102, 164};
-int hsv_pill_b_min[3] = {95, 34, 98};
-int hsv_pill_b_max[3] = {126, 153, 190};
+int hsv_pill_g_min[3] = {61, 21, 54};
+int hsv_pill_g_max[3] = {100, 93, 176};
+int hsv_pill_b_min[3] = {91, 39, 120};
+int hsv_pill_b_max[3] = {136, 113, 176};
 int hsv_cone_min[3] = {0, 142, 88};
 int hsv_cone_max[3] = {183, 255, 255};
 
@@ -64,7 +64,6 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
 
         // draw the roi
         rectangle(img_show, roi, Scalar(0, 0, 255), 2);
-        // imshow("img_show", img_show);
 
         // count the number of contours
         printf("Green number: %ld, Blue number: %ld\n", contours_g.size(), contours_b.size());
@@ -102,7 +101,6 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
         printf("Green area: %f, Blue area: %f\n", avg_area_g, avg_area_b);
         printf("Green area var : %f , Blue area var : % f \n",variance_g,variance_b);
         
-        
         Mat image_hsv_spilt_cone;
         inRange(img_hsv,Scalar(hsv_cone_min[0],hsv_cone_min[1],hsv_cone_min[2]),Scalar(hsv_cone_max[0],hsv_cone_max[1],hsv_cone_max[2]),image_hsv_spilt_cone);
         rectangle(img_show,roi_cone,Scalar(0,255,0),2);
@@ -113,7 +111,6 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
         imshow("cone_roi",roiImage_cone);
         printf("cone_pixel_count: %d\n",cone_pixel_count);
         
-
         waitKey(30);
 
     } catch (cv_bridge::Exception& e) {
